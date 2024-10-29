@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>table</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <ul class="nav nav-tabs" id="myTab" role="tablist" style="display: flex; justify-content: end;">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="home" aria-selected="true">Tab-1</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#tab2" role="tab" aria-controls="profile" aria-selected="false">Tab-2</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="home-tab">
+               
+                             
+    <div id="loading">Loading...</div> <!-- Loading Indicator -->
+    <div class="card p-2">
+        <div class="w-100 d-flex gap-2 p-1">
+            <div class="w-25">
+                <div class="input-group ">
+                    <input type="text" id="dateRange" class="form-control text-center" placeholder="Select Date Range">
+                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+            </div>
+            <div class="w-100  d-flex justify-content-end gap-2">
+                <div class="dropdown ">
+                    <button class="btn dropdown-toggle p-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border:1px solid rgb(202, 202, 202)">
+                        <i class="fas fa-filter"></i> Categories
+                    </button>
+                    <ul class="dropdown-menu p-2 w-25">
+                        <span>Categories</span>
+                        <hr>
+                        <div id="std-filters"></div> <!-- Unique STD checkboxes will be added here -->
+                        <!-- <span>Sub Categories</span> -->
+                        <hr>
+                        <div id="subcategory-filters"></div> <!-- Subcategory checkboxes will be added here -->
+                        
+                        <hr>
+                        <div class="w-100 d-flex gap-1 mb-1">
+                            <button type="button" class="btn btn-warning" id="apply-filters">Apply</button>
+                            <button type="button" id="clear-filters" class="btn btn-danger">Clear</button>
+                        </div>
+                    </ul>
+                </div>
+    
+                <div class="input-wrapper rounded-3 d-flex p-1" style="border: 1px solid rgb(199, 199, 199);">
+                    <input type="text" class="form-control" id="search-input" placeholder="Search..." style="border: none;">
+                    <button id="search-button" class="btn btn-warning">Search</button> <!-- Updated Button -->
+                </div>
+    
+            </div>
+            
+            
+        </div>
+        <div class="table-responsive text-nowrap rounded-3">
+            <table class="table table-striped table-hover p-1" id="data-table">
+                <thead>
+                    <tr class="bg-success text-white fw-400">
+                        <th class="sortable" data-sort="id" onclick="sortTable('id')">ID <i class="fa-solid fa-sort"></i></th>
+                        <th class="sortable" data-sort="name" onclick="sortTable('name')">NAME <i class="fa-solid fa-sort"></i></th>
+                        <th class="sortable" data-sort="std" onclick="sortTable('std')">STD <i class="fa-solid fa-sort"></i></th>
+                        <th class="sortable" data-sort="state" onclick="sortTable('state')">STATE <i class="fa-solid fa-sort"></i></th>
+                        <th class="sortable" data-sort="city" onclick="sortTable('city')">CITY <i class="fa-solid fa-sort"></i></th>
+                        <th class="sortable" data-sort="date" onclick="sortTable('date')">DATE <i class="fa-solid fa-sort"></i></th>
+                        <th class="sortable" data-sort="subcategories" onclick="sortTable('subcategories')">SUB-CATEGORIES <i class="fa-solid fa-sort"></i></th>
+                        <th class="sortable" data-sort="email" onclick="sortTable('email')">EMAIL <i class="fa-solid fa-sort"></i></th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody id="data-fetch"></tbody>
+            </table>
+            <p class="text-danger" id="error-msg"></p>
+            <div class="w-100 p-2 d-flex justify-content-between align-items-center justify-content-center">
+                <div class="d-flex gap-2">
+                    <p class="mt-2">Show</p>
+                    <select id="rows-per-page" class="form-select" style="width: 85px;"></select>
+                    <p class="mt-2">Entries</p>
+                </div>
+                <div id="page" class="text-muted text-center mb-1"></div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center" id="pagination-controls"></ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+            </div>
+            <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="profile-tab">
+                <div id="loading">Loading...</div> <!-- Loading Indicator -->
+                <div class="card p-2">
+                    <div class="w-100 d-flex gap-2 p-1">
+                        <div class="w-25">
+                            <div class="input-group ">
+                                <input type="text" id="dateRange" class="form-control text-center" placeholder="Select Date Range">
+                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                            </div>
+                        </div>
+                        <div class="w-100  d-flex justify-content-end gap-2">
+                            <div class="dropdown ">
+                                <button class="btn dropdown-toggle p-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border:1px solid rgb(202, 202, 202)">
+                                    <i class="fas fa-filter"></i> Categories
+                                </button>
+                                <ul class="dropdown-menu p-2 w-25">
+                                    <span>Categories</span>
+                                    <hr>
+                                    <div id="std-filters"></div> <!-- Unique STD checkboxes will be added here -->
+                                    <!-- <span>Sub Categories</span> -->
+                                    <hr>
+                                    <div id="subcategory-filters"></div> <!-- Subcategory checkboxes will be added here -->
+                                    
+                                    <hr>
+                                    <div class="w-100 d-flex gap-1 mb-1">
+                                        <button type="button" class="btn btn-warning" id="apply-filters">Apply</button>
+                                        <button type="button" id="clear-filters" class="btn btn-danger">Clear</button>
+                                    </div>
+                                </ul>
+                            </div>
+                
+                            <div class="input-wrapper rounded-3 d-flex p-1" style="border: 1px solid rgb(199, 199, 199);">
+                                <input type="text" class="form-control" id="search-input" placeholder="Search..." style="border: none;">
+                                <button id="search-button" class="btn btn-warning">Search</button> <!-- Updated Button -->
+                            </div>
+                
+                        </div>
+                        
+                        
+                    </div>
+                    <div class="table-responsive text-nowrap rounded-3">
+                        <table class="table table-striped table-hover p-1" id="data-table">
+                            <thead>
+                                <tr class="bg-success text-white fw-400">
+                                    <th class="sortable" data-sort="id" onclick="sortTable('id')">ID <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="name" onclick="sortTable('name')">NAME <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="std" onclick="sortTable('std')">STD <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="state" onclick="sortTable('state')">STATE <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="city" onclick="sortTable('city')">CITY <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="date" onclick="sortTable('date')">DATE <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="subcategories" onclick="sortTable('subcategories')">SUB-CATEGORIES <i class="fa-solid fa-sort"></i></th>
+                                    <th class="sortable" data-sort="email" onclick="sortTable('email')">EMAIL <i class="fa-solid fa-sort"></i></th>
+                                    <th>ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="data-fetch"></tbody>
+                        </table>
+                        <p class="text-danger" id="error-msg"></p>
+                        <div class="w-100 p-2 d-flex justify-content-between align-items-center justify-content-center">
+                            <div class="d-flex gap-2">
+                                <p class="mt-2">Show</p>
+                                <select id="rows-per-page" class="form-select" style="width: 85px;"></select>
+                                <p class="mt-2">Entries</p>
+                            </div>
+                            <div id="page" class="text-muted text-center mb-1"></div>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-center" id="pagination-controls"></ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script>
+    let globalData = []; // Store fetched data globally
+let currentSortColumn = null;
+let currentSortOrder = 'asc';
+let currentPage = 1;
+let itemsPerPage = 10;
+let selectedSTDs = [];
+let selectedSubcategories = [];
+   // Function to format the current date
+function getCurrentDateFormatted() {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = today.getFullYear();
+    return `${day}-${month}-${year}`;
+}
+
+async function fetchData() {
+    const loadingIndicator = document.getElementById('loading');
+    const errorMsg = document.getElementById('error-msg');
+    const tableBody = document.getElementById('data-fetch');
+
+    loadingIndicator.style.display = 'block';
+    errorMsg.style.display = 'none';
+    tableBody.innerHTML = '';
+
+    try {
+        const response = await fetch('data/question_post.json');
+        if (!response.ok) throw new Error('Network response was not ok');
+        globalData = await response.json();
+
+        populateFilters(globalData);
+        populateRowsPerPage(globalData.length);
+        applyFilters(); // Show filtered table by default
+        setupPagination(globalData.length);
+
+        const savedSTDs = JSON.parse(localStorage.getItem('selectedSTDs')) || [];
+        const savedSubcategories = JSON.parse(localStorage.getItem('selectedSubcategories')) || [];
+        // Set checkboxes based on local storage values
+        setCheckboxesFromLocalStorage(savedSTDs, savedSubcategories);
+
+        // Apply filters if there are saved values
+        if (savedSTDs.length > 0 || savedSubcategories.length > 0) {
+            selectedSTDs = savedSTDs;
+            selectedSubcategories = savedSubcategories;
+            applyFilters(); // Apply filters to the data
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        errorMsg.textContent = 'Failed to load data. Please try again later.';
+        errorMsg.style.display = 'block';
+    } finally {
+        loadingIndicator.style.display = 'none';
+    }
+}
+
+ // Function to set checkbox states based on local storage
+ function setCheckboxesFromLocalStorage(savedSTDs, savedSubcategories) {
+    // Check and set STD checkboxes
+    savedSTDs.forEach(std => {
+        const checkbox = document.getElementById(`std-${std}`);
+        if (checkbox) {
+            checkbox.checked = true; // Set checkbox as checked
+        }
+    });
+
+    // Check and set subcategory checkboxes
+    savedSubcategories.forEach(sub => {
+        const checkbox = document.getElementById(`sub-${sub}`);
+        if (checkbox) {
+            checkbox.checked = true; // Set checkbox as checked
+        }
+    });
+}
+
+
+// Function to set the current date in the date input field
+function setCurrentDate() {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = today.getFullYear();
+    // Format as DD-MM-YYYY
+    const formattedDate = `${day}-${month}-${year}`;
+    // Set the value of the date range input
+   return document.getElementById('#dateRange').value = formattedDate;
+}
+
+$('#dateRange').daterangepicker({
+    autoUpdateInput: false,
+    locale: { format: 'DD-MM-YYYY', cancelLabel: 'Clear' }
+});
+$('#dateRange').on('apply.daterangepicker', function(ev, picker) {
+    $(this).val(picker.startDate.format('DD-MM-YYYY') + ' - ' + picker.endDate.format('DD-MM-YYYY'));
+    applyFilters();
+});
+$('#dateRange').on('cancel.daterangepicker', function(ev, picker) {
+    $(this).val(setCurrentDate());
+    applyFilters();
+});
+
+function populateFilters(data) {
+    const stdFiltersDiv = document.getElementById('std-filters');
+    const subcategoryFiltersDiv = document.getElementById('subcategory-filters');
+
+    const uniqueSTDs = [...new Set(data.map(item => item.std))];
+    uniqueSTDs.forEach(std => {
+        const checkbox = document.createElement('div');
+        checkbox.innerHTML = `
+            <input type="checkbox" id="std-${std}" value="${std}">
+            <label for="std-${std}">${std}</label>
+        `;
+        stdFiltersDiv.appendChild(checkbox);
+    });
+
+    const subcategories = ['A', 'B', 'C', 'D', 'E', 'F'];
+    subcategories.forEach(sub => {
+        const checkbox = document.createElement('div');
+        checkbox.innerHTML = `
+            <input type="checkbox" id="sub-${sub}" value="${sub}">
+            <label for="sub-${sub}">${sub}</label>
+        `;
+        subcategoryFiltersDiv.appendChild(checkbox);
+    });
+}
+
+
+document.getElementById('search-button').addEventListener('click', function() {
+applyFilters(); // Call applyFilters when the search button is clicked
+});
+   // Function to handle the "Apply" button click
+document.getElementById('apply-filters').addEventListener('click', function() {
+    selectedSTDs = [...document.querySelectorAll('#std-filters input:checked')].map(checkbox => checkbox.value);
+    selectedSubcategories = [...document.querySelectorAll('#subcategory-filters input:checked')].map(checkbox => checkbox.value);
+
+    // Store selections in local storage
+    localStorage.setItem('selectedSTDs', JSON.stringify(selectedSTDs));
+    localStorage.setItem('selectedSubcategories', JSON.stringify(selectedSubcategories));
+
+    applyFilters(); // Apply filters to the data
+});
+function applyFilters() {
+    let filteredData = globalData; // start with the full data set
+    const dateRange = $('#dateRange').val();
+    const searchQuery = document.getElementById('search-input').value.toLowerCase();
+
+    // Apply Date Range Filter
+    if (dateRange) {
+        const [startDate, endDate] = dateRange.split(' - ').map(date => moment(date, 'DD-MM-YYYY'));
+        filteredData = filteredData.filter(item => {
+            const itemDate = moment(item.date, 'DD-MM-YYYY');
+            return itemDate.isBetween(startDate, endDate, 'day', '[]');
+        });
+    }
+
+    if (selectedSTDs.length > 0) {
+        filteredData = filteredData.filter(item => selectedSTDs.includes(item.std));
+    }
+    if (selectedSubcategories.length > 0) {
+        filteredData = filteredData.filter(item => selectedSubcategories.includes(item.subcategories));
+    }
+
+    // Apply Search Filter
+    if (searchQuery) {
+        filteredData = filteredData.filter(item => {
+            // Check if any of the relevant fields match the search query
+            return (
+                item.name.toLowerCase().includes(searchQuery) ||
+                item.std.toLowerCase().includes(searchQuery) ||
+                item.state.toLowerCase().includes(searchQuery) ||
+                item.city.toLowerCase().includes(searchQuery) ||
+                item.subcategories.toLowerCase().includes(searchQuery) ||
+                item.email.toLowerCase().includes(searchQuery)
+            );
+        });
+    }
+
+    // Populate the table with filtered data and setup pagination
+    populateTable(filteredData);
+    setupPagination(filteredData.length);
+}
+
+document.getElementById('clear-filters').addEventListener('click', function() {
+// Clear local storage for STDs and subcategories
+localStorage.removeItem('selectedSTDs');
+localStorage.removeItem('selectedSubcategories');
+
+// Reset selected STDs and subcategories arrays
+selectedSTDs = [];
+selectedSubcategories = [];
+
+// Uncheck all STD checkboxes
+const stdCheckboxes = document.querySelectorAll('#std-filters input[type="checkbox"]');
+stdCheckboxes.forEach(checkbox => {
+checkbox.checked = false; // Uncheck each checkbox
+});
+
+// Uncheck all subcategory checkboxes
+const subCheckboxes = document.querySelectorAll('#subcategory-filters input[type="checkbox"]');
+subCheckboxes.forEach(checkbox => {
+checkbox.checked = false; // Uncheck each checkbox
+});
+
+// Reapply filters to refresh the table
+applyFilters(); // Apply filters to update the table
+});
+function populateTable(data) {
+    const tableBody = document.getElementById('data-fetch');
+    tableBody.innerHTML = '';
+
+    // Sorting the data if a sort column is selected
+    if (currentSortColumn) {
+        data = data.sort((a, b) => {
+            if (currentSortOrder === 'asc') {
+                return a[currentSortColumn] > b[currentSortColumn] ? 1 : -1;
+            } else {
+                return a[currentSortColumn] < b[currentSortColumn] ? 1 : -1;
+            }
+        });
+    }
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
+
+    paginatedData.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.id}</td>
+            <td>${item.name}</td>
+            <td>${item.std}</td>
+            <td>${item.state}</td>
+            <td>${item.city}</td>
+            <td>${item.date}</td>
+            <td>${item.subcategories}</td>
+            <td>${item.email}</td>
+            <td>
+                <button class="btn btn-primary btn-sm">Action</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function populateRowsPerPage(totalItems) {
+    const rowsPerPageSelect = document.getElementById('rows-per-page');
+    rowsPerPageSelect.innerHTML = '';
+
+    [10, 20, 30, 50].forEach(num => {
+        const option = document.createElement('option');
+        option.value = num;
+        option.textContent = num;
+        if (num === itemsPerPage) {
+            option.selected = true;
+        }
+        rowsPerPageSelect.appendChild(option);
+    });
+
+    rowsPerPageSelect.addEventListener('change', (event) => {
+        itemsPerPage = parseInt(event.target.value);
+        setupPagination(totalItems);
+        applyFilters();
+    });
+}
+
+function setupPagination(totalItems) {
+const paginationControls = document.getElementById('pagination-controls');
+paginationControls.innerHTML = '';
+
+const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+// Create "Previous" button
+const createPrevButton = () => {
+const li = document.createElement('li');
+li.classList.add('page-item');
+li.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
+li.addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--;
+        applyFilters();
+    }
+});
+if (currentPage === 1) {
+    li.classList.add('disabled');
+}
+paginationControls.appendChild(li);
+};
+
+// Create "Next" button
+const createNextButton = () => {
+const li = document.createElement('li');
+li.classList.add('page-item');
+li.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
+li.addEventListener('click', () => {
+    if (currentPage < totalPages) {
+        currentPage++;
+        applyFilters();
+    }
+});
+if (currentPage === totalPages) {
+    li.classList.add('disabled');
+}
+paginationControls.appendChild(li);
+};
+
+// Create numbered page buttons
+const createPaginationButton = (page) => {
+const li = document.createElement('li');
+li.classList.add('page-item');
+li.innerHTML = `<a class="page-link" href="#">${page}</a>`;
+li.addEventListener('click', () => {
+    currentPage = page;
+    applyFilters();
+});
+if (page === currentPage) {
+    li.classList.add('active');
+}
+return li;
+};
+
+// Calculate page range
+const maxPagesToShow = 5; // Total number of page links to show
+const halfPagesToShow = Math.floor(maxPagesToShow / 2);
+let startPage = Math.max(1, currentPage - halfPagesToShow);
+let endPage = Math.min(totalPages, currentPage + halfPagesToShow);
+
+// Adjust start page if not enough pages to show before the current page
+if (currentPage <= halfPagesToShow) {
+endPage = Math.min(maxPagesToShow, totalPages);
+}
+
+// Adjust end page if not enough pages to show after the current page
+if (currentPage + halfPagesToShow > totalPages) {
+startPage = Math.max(1, totalPages - maxPagesToShow + 1);
+}
+
+createPrevButton(); // Add "Previous" button
+
+// Add page buttons
+for (let i = startPage; i <= endPage; i++) {
+paginationControls.appendChild(createPaginationButton(i));
+}
+
+createNextButton(); // Add "Next" button
+}
+
+
+function sortTable(column) {
+    if (currentSortColumn === column) {
+        currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSortColumn = column;
+        currentSortOrder = 'asc';
+    }
+    applyFilters();
+}
+
+// Fetch data on page load
+document.addEventListener('DOMContentLoaded', fetchData);
+</script>
+</body>
+</html>
